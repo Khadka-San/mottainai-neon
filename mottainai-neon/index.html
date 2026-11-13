@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a14">
+<title>Mottainai Neon</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Splash -->
+  <div id="screen-splash" class="screen active">
+    <div class="splash-particles">
+      <div class="particle" style="left:10%;animation-delay:0s"></div>
+      <div class="particle" style="left:25%;animation-delay:0.5s"></div>
+      <div class="particle" style="left:50%;animation-delay:1s"></div>
+      <div class="particle" style="left:75%;animation-delay:1.5s"></div>
+      <div class="particle" style="left:90%;animation-delay:2s"></div>
+    </div>
+    <div class="splash-logo">🌱</div>
+    <h1 data-i18n="appName">Mottainai Neon</h1>
+    <p data-i18n="tagline">Reuse, Renew, Rejoice</p>
+    <button class="btn btn-primary btn-full" onclick="showScreen('auth');setAuthTab('signin')" data-i18n="signIn">Sign In</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-secondary btn-full" onclick="showScreen('auth');setAuthTab('signup')" data-i18n="signUp">Sign Up</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-ghost btn-full" onclick="showScreen('home')" data-i18n="continueAsGuest">Continue as Guest</button>
+  </div>
+
+  <!-- Auth -->
+  <div id="screen-auth" class="screen auth-container">
+    <h1 data-i18n="appName" style="text-align:center;margin-bottom:16px">Mottainai Neon</h1>
+    <div class="auth-tabs">
+      <div id="tab-signin" class="auth-tab active" onclick="setAuthTab('signin')" data-i18n="signIn">Sign In</div>
+      <div id="tab-signup" class="auth-tab" onclick="setAuthTab('signup')" data-i18n="signUp">Sign Up</div>
+    </div>
+    <div id="signinForm">
+      <label data-i18n="email">Email</label>
+      <input id="si_email" class="input" type="email" placeholder="email@example.com">
+      <label data-i18n="password">Password</label>
+      <input id="si_password" class="input" type="password" placeholder="••••••••">
+      <button class="btn btn-primary btn-full" onclick="doSignIn()" data-i18n="signIn">Sign In</button>
+    </div>
+    <div id="signupForm" style="display:none">
+      <label data-i18n="name">Name</label>
+      <input id="su_name" class="input">
+      <label data-i18n="email">Email</label>
+      <input id="su_email" class="input" type="email">
+      <label data-i18n="password">Password</label>
+      <input id="su_password" class="input" type="password">
+      <button class="btn btn-primary btn-full" onclick="doSignUp()" data-i18n="signUp">Sign Up</button>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <a href="#" onclick="showScreen('home');return false" data-i18n="continueAsGuest">Continue as Guest</a>
+    </div>
+  </div>
+
+  <!-- Home -->
+  <div id="screen-home" class="screen">
+    <div class="topbar">
+      <h1 data-i18n="appName">Mottainai Neon</h1>
+      <button class="icon-btn" onclick="showScreen('account')">👤</button>
+    </div>
+    <div class="hero">
+      <h2>🌱 <span data-i18n="featured">Featured Reuse</span></h2>
+      <p data-i18n="tagline">Reuse, Renew, Rejoice</p>
+    </div>
+    <div class="cat-row" id="catRow">
+      <div class="cat-chip active" onclick="selectCategory('All')" data-i18n="all">All</div>
+      <div class="cat-chip" onclick="selectCategory('Electronics')" data-i18n="electronics">Electronics</div>
+      <div class="cat-chip" onclick="selectCategory('Fashion')" data-i18n="fashion">Fashion</div>
+      <div class="cat-chip" onclick="selectCategory('Furniture')" data-i18n="furniture">Furniture</div>
+      <div class="cat-chip" onclick="selectCategory('Books')" data-i18n="books">Books</div>
+      <div class="cat-chip" onclick="selectCategory('Toys')" data-i18n="toys">Toys</div>
+      <div class="cat-chip" onclick="selectCategory('Free')">🎁 <span data-i18n="freeItems">Free</span></div>
+    </div>
+    <div class="section-title">
+      <h3>Products</h3>
+      <a onclick="showFilterModal()">⚙ <span data-i18n="filters">Filters</span></a>
+    </div>
+    <div class="product-grid" id="productGrid"></div>
+    <div id="recentViewed"></div>
+  </div>
+
+  <!-- Search -->
+  <div id="screen-search" class="screen">
+    <div class="topbar"><h1 data-i18n="search">Search</h1></div>
+    <div class="search-bar">
+      <span class="ic">🔍</span>
+      <input id="searchInput" data-i18n-placeholder="search" placeholder="Search..." oninput="onSearchInput(this.value)">
+    </div>
+    <div class="cat-row">
+      <div class="cat-chip active" onclick="selectCategory('All')" data-i18n="all">All</div>
+      <div class="cat-chip" onclick="selectCategory('Electronics')" data-i18n="electronics">Electronics</div>
+      <div class="cat-chip" onclick="selectCategory('Fashion')" data-i18n="fashion">Fashion</div>
+      <div class="cat-chip" onclick="selectCategory('Furniture')" data-i18n="furniture">Furniture</div>
+      <div class="cat-chip" onclick="selectCategory('Books')" data-i18n="books">Books</div>
+      <div class="cat-chip" onclick="selectCategory('Toys')" data-i18n="toys">Toys</div>
+    </div>
+    <div class="product-grid" id="productGrid2"></div>
+  </div>
+
+  <!-- Product Detail -->
+<div id="screen-product" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('home')">←</button>
+    <h1 data-i18n="productName">Product</h1>
+    <div style="width:40px"></div>
+  </div>
+    <div class="image-preview" id="detailMainImage" style="aspect-ratio:1;cursor:zoom-in"></div>
+    <div class="image-gallery" id="detailGallery"></div>
+    <h2 id="detailName" style="margin:10px 0 4px"></h2>
+    <div id="detailPrice" style="color:var(--accent);font-size:24px;font-weight:800;margin-bottom:8px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div id="detailRating"></div>
+      <div id="detailViews" style="color:var(--muted);font-size:12px"></div>
+    </div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted)" data-i18n="category">Category</span><span id="detailCategory"></span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted)" data-i18n="condition">Condition</span><span id="detailCondition"></span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted)" data-i18n="location">Location</span><span id="detailLocation"></span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--muted)">Seller</span><span id="detailSeller"></span></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:4px" data-i18n="description">Description</div>
+      <div id="detailDescription"></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addCurrentToCart()" data-i18n="addToCart">Add to Cart</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-secondary btn-full" onclick="contactSeller()" data-i18n="contactSeller">Contact Seller</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-secondary btn-full" onclick="showReviewModal(STATE.currentProduct.id)">⭐ <span data-i18n="writeReview">Write a Review</span></button>
+    <h3 style="margin:20px 0 10px" data-i18n="reviews">Reviews</h3>
+    <div id="reviewsList"></div>
+  </div>
+
+  <!-- Cart -->
+  <div id="screen-cart" class="screen">
+    <div class="topbar"><h1 data-i18n="cart">Cart</h1></div>
+    <div id="cartList"></div>
+    <div id="couponStatus"></div>
+    <div class="total-bar">
+      <div>
+        <div style="color:var(--muted);font-size:12px">Subtotal: <span id="cartSubtotal">¥0</span></div>
+        <div style="color:var(--danger);font-size:12px" data-i18n="discount">Discount: <span id="cartDiscount">-¥0</span></div>
+        <div style="font-size:20px;font-weight:800;color:var(--accent)"><span data-i18n="total">Total</span>: <span id="cartTotal">¥0</span></div>
+        <div style="font-size:12px;color:var(--success)" id="cartPoints">+0 pts</div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doCheckout()" data-i18n="checkout">Checkout</button>
+  </div>
+
+  <!-- Account -->
+  <div id="screen-account" class="screen">
+    <div class="topbar"><h1 data-i18n="account">Account</h1></div>
+    <div class="profile-header">
+      <div class="avatar" id="accountAvatar">👤</div>
+      <div class="profile-info">
+        <h2 id="accountName">Guest</h2>
+        <p id="accountStatus">Guest mode</p>
+        <div id="accountLevel"></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="v" id="accountPoints">0</div><div class="l" data-i18n="mottainaiPoints">Points</div></div>
+      <div class="stat-card"><div class="v" id="accountFavs">0</div><div class="l">Favorites</div></div>
+      <div class="stat-card"><div class="v" id="accountOrders">0</div><div class="l" data-i18n="orders">Orders</div></div>
+    </div>
+    <div id="accountStats"></div>
+    <div class="menu-list">
+      <div class="menu-item" onclick="showScreen('myListings')">
+        <div class="left"><span class="ic">📦</span><span data-i18n="myListings">My Listings</span></div><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showScreen('favorites')">
+        <div class="left"><span class="ic">❤️</span><span>Favorites</span></div><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showScreen('messages')">
+        <div class="left"><span class="ic">💬</span><span data-i18n="messages">Messages</span></div>
+        <span class="badge" id="msgBadge" style="display:none">0</span>
+      </div>
+      <div class="menu-item" onclick="showScreen('orders')">
+        <div class="left"><span class="ic">📋</span><span data-i18n="orders">Orders</span></div><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showAddressModal()">
+        <div class="left"><span class="ic">📍</span><span data-i18n="address">Address</span></div>
+        <span id="accountAddress" style="color:var(--muted);font-size:12px">—</span>
+      </div>
+      <div class="menu-item" onclick="showPaymentPicker()">
+        <div class="left"><span class="ic">💳</span><span data-i18n="payment">Payment</span></div>
+        <span id="accountPay" style="color:var(--muted);font-size:12px">—</span>
+      </div>
+      <div class="menu-item" onclick="showScreen('eco')">
+        <div class="left"><span class="ic">🌱</span><span>Eco</span></div><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showScreen('help')">
+        <div class="left"><span class="ic">❓</span><span data-i18n="help">Help</span></div><span>›</span>
+      </div>
+      <div class="menu-item" onclick="showScreen('settings')">
+        <div class="left"><span class="ic">⚙️</span><span data-i18n="settings">Settings</span></div><span>›</span>
+      </div>
+      <div class="menu-item" id="accountSigninRow" style="display:none" onclick="showScreen('auth')">
+        <div class="left"><span class="ic">🔑</span><span data-i18n="signIn">Sign In</span></div><span>›</span>
+      </div>
+      <div class="menu-item" id="accountSignoutRow" style="display:none" onclick="doSignOut()">
+        <div class="left"><span class="ic">🚪</span><span data-i18n="signOut">Sign Out</span></div><span>›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div id="screen-upload" class="screen">
+    <div class="topbar"><h1 id="uploadTitle" data-i18n="addProduct">Add Product</h1></div>
+    <div class="image-preview" id="uploadPreview" onclick="document.getElementById('uploadFile').click()"></div>
+    <input type="file" id="uploadFile" accept="image/*" multiple style="display:none" onchange="onUploadImage(event)">
+    <div class="image-gallery" id="uploadGallery"></div>
+    <label data-i18n="productName">Name</label>
+    <input id="uploadName" class="input">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label data-i18n="price">Price</label><input id="uploadPrice" class="input" type="number" min="0"></div>
+      <div><label>Original ¥</label><input id="uploadOriginal" class="input" type="number" min="0"></div>
+    </div>
+    <label><input type="checkbox" id="uploadFree"> <span data-i18n="free">Free</span></label>
+    &nbsp;&nbsp;<label><input type="checkbox" id="uploadEco"> 🌱 <span data-i18n="ecoTag">Eco</span></label>
+    <label data-i18n="category">Category</label>
+    <select id="uploadCategory" class="select">
+      <option>Electronics</option><option>Fashion</option><option>Furniture</option>
+      <option>Books</option><option>Toys</option><option>Other</option>
+    </select>
+    <label data-i18n="condition">Condition</label>
+    <select id="uploadCondition" class="select">
+      <option>Used</option><option>Like New</option><option>New</option>
+    </select>
+    <label data-i18n="description">Description</label>
+    <textarea id="uploadDescription" class="textarea"></textarea>
+    <label data-i18n="location">Location</label>
+    <select id="uploadLocation" class="select">
+      <option>Tokyo</option><option>Osaka</option><option>Nagoya</option>
+      <option>Fukuoka</option><option>Sapporo</option><option>Kobe</option><option>Other</option>
+    </select>
+    <button class="btn btn-primary btn-full" onclick="saveProduct()" data-i18n="confirm">Confirm</button>
+  </div>
+
+  <!-- Messages -->
+<div id="screen-messages" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1 data-i18n="messages">Messages</h1>
+    <div style="width:40px"></div>
+  </div>
+  <div id="conversationsList"></div>
+</div>
+
+  <!-- Chat -->
+<div id="screen-chat" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('messages')">←</button>
+    <h1 id="chatPartner">Chat</h1>
+    <div style="width:40px"></div>
+  </div>
+  <div class="chat-room">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+      <input id="chatInput" data-i18n-placeholder="typeMessage" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendMessage()">
+      <button onclick="sendMessage()">▶</button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- My Listings -->
+<div id="screen-myListings" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1 data-i18n="myListings">My Listings</h1>
+    <button class="icon-btn" onclick="renderUploadForm();showScreen('upload');">＋</button>
+  </div>
+  <div id="myListingsList"></div>
+</div>
+
+
+  <!-- Favorites -->
+<div id="screen-favorites" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1>Favorites</h1>
+  </div>
+  <div id="favoritesList"></div>
+</div>
+
+
+  <!-- Orders -->
+<div id="screen-orders" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1 data-i18n="orders">Orders</h1>
+  </div>
+  <div id="ordersList"></div>
+</div>
+
+  <!-- Eco -->
+<div id="screen-eco" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1>🌱 Eco</h1>
+  </div>
+  <div id="heatmap"></div>
+  <div id="ecoHome"></div>
+</div>
+
+  <!-- Help -->
+<div id="screen-help" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1 data-i18n="help">Help</h1>
+  </div>
+  <div id="helpList"></div>
+</div>
+
+
+  <!-- Settings -->
+<div id="screen-settings" class="screen">
+  <div class="topbar">
+    <button class="icon-btn" onclick="showScreen('account')">←</button>
+    <h1 data-i18n="settings">Settings</h1>
+  </div>
+  <div class="menu-list">
+    
+    <!-- Language -->
+    <div class="menu-item" style="flex-direction:column;align-items:stretch;gap:12px">
+  <div class="left" style="margin-bottom:8px"><span class="ic">🌐</span><span data-i18n="language">Language</span></div>
+  <div class="lang-dropdown" id="langDropdown">
+    <button class="lang-current" onclick="toggleLangDropdown(event)">
+      <span class="flag" id="langFlag">🇬🇧</span>
+      <span class="name" id="langName">English</span>
+      <span class="code" id="langCode">EN</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="lang-menu" id="langMenu">
+      <input type="text" class="lang-search" id="langSearch" placeholder="Search language..." oninput="filterLanguages(this.value)">
+      <div id="langOptions"></div>
+    </div>
+  </div>
+</div>
+
+    
+    <!-- Theme (5 neon colors) -->
+    <div class="menu-item" style="flex-direction:column;align-items:stretch;gap:12px">
+      <div class="left"><span class="ic">🎨</span><span data-i18n="theme">Theme</span></div>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+    
+    <!-- Mode (Light / Dark) -->
+    <div class="menu-item" style="flex-direction:column;align-items:stretch;gap:12px">
+      <div class="left"><span class="ic">🌗</span><span data-i18n="mode">Mode</span></div>
+      <div class="mode-toggle">
+        <button class="mode-btn" data-mode="dark" onclick="setMode('dark')">🌙 <span data-i18n="darkMode">Dark</span></button>
+        <button class="mode-btn" data-mode="light" onclick="setMode('light')">☀️ <span data-i18n="lightMode">Light</span></button>
+      </div>
+    </div>
+    
+    <!-- Other Settings -->
+    <div class="menu-item">
+      <div class="left"><span class="ic">🔔</span><span data-i18n="notifications">Notifications</span></div>
+      <div class="switch" data-key="notifications" onclick="toggleSetting('notifications')"></div>
+    </div>
+    <div class="menu-item">
+      <div class="left"><span class="ic">📐</span><span data-i18n="compactMode">Compact</span></div>
+      <div class="switch" data-key="compact" onclick="toggleSetting('compact')"></div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Admin -->
+  <div id="screen-admin" class="screen">
+    <div class="topbar">
+      <button class="icon-btn" onclick="showScreen('home')">←</button>
+      <h1 data-i18n="admin">Admin</h1>
+      <button class="icon-btn" onclick="doSignOut()">🚪</button>
+    </div>
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="renderAdminSection('dashboard')" data-i18n="dashboard">Dashboard</div>
+      <div class="admin-tab" onclick="renderAdminSection('products')">Products</div>
+      <div class="admin-tab" onclick="renderAdminSection('orders')" data-i18n="orders">Orders</div>
+      <div class="admin-tab" onclick="renderAdminSection('customers')" data-i18n="customers">Customers</div>
+      <div class="admin-tab" onclick="renderAdminSection('messages')" data-i18n="messages">Messages</div>
+    </div>
+    <div id="adminBody"></div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-screen="home" onclick="showScreen('home')">
+      <div class="ic">🏠</div><div data-i18n="home">Home</div>
+    </button>
+    <button class="nav-item" data-screen="search" onclick="showScreen('search')">
+      <div class="ic">🔍</div><div data-i18n="search">Search</div>
+    </button>
+    <button class="nav-item" data-screen="upload" onclick="showScreen('upload')">
+      <div class="ic">＋</div><div data-i18n="sell">Sell</div>
+    </button>
+    <button class="nav-item" data-screen="cart" onclick="showScreen('cart')">
+      <div class="ic">🛒</div><div data-i18n="cart">Cart</div>
+      <span class="badge" id="cartBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" data-screen="account" onclick="showScreen('account')">
+      <div class="ic">👤</div><div data-i18n="account">Account</div>
+    </button>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this)closeModal()"></div>
+</div>
+
+<script src="js/i18n.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/coupons.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/reviews.js"></script>
+<script src="js/products.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/app.js"></script>
+<script>loadSettings();</script>
+</body>
+</html>

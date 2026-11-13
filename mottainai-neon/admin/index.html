@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Mottainai Neon</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">🌱</div>
+      <div class="brand">
+        <h2>Mottainai</h2>
+        <p>Admin Panel</p>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <a class="nav-link active" data-page="dashboard" onclick="showPage('dashboard')">
+        <span class="ic">📊</span><span>Dashboard</span>
+      </a>
+      <a class="nav-link" data-page="analytics" onclick="showPage('analytics')">
+        <span class="ic">📈</span><span>Analytics</span>
+      </a>
+      
+      <div class="nav-section">Catalog</div>
+      <a class="nav-link" data-page="products" onclick="showPage('products')">
+        <span class="ic">📦</span><span>Products</span>
+        <span class="badge" id="productCount">0</span>
+      </a>
+      <a class="nav-link" data-page="categories" onclick="showPage('categories')">
+        <span class="ic">🗂️</span><span>Categories</span>
+      </a>
+      <a class="nav-link" data-page="reviews" onclick="showPage('reviews')">
+        <span class="ic">⭐</span><span>Reviews</span>
+      </a>
+      <a class="nav-link" data-page="coupons" onclick="showPage('coupons')">
+        <span class="ic">🎟️</span><span>Coupons</span>
+      </a>
+      
+      <div class="nav-section">Sales</div>
+      <a class="nav-link" data-page="orders" onclick="showPage('orders')">
+        <span class="ic">🛒</span><span>Orders</span>
+        <span class="badge" id="orderCount">0</span>
+      </a>
+      <a class="nav-link" data-page="payments" onclick="showPage('payments')">
+        <span class="ic">💳</span><span>Payments</span>
+      </a>
+      
+      <div class="nav-section">Users</div>
+      <a class="nav-link" data-page="users" onclick="showPage('users')">
+        <span class="ic">👥</span><span>Customers</span>
+        <span class="badge" id="userCount">0</span>
+      </a>
+      <a class="nav-link" data-page="messages" onclick="showPage('messages')">
+        <span class="ic">💬</span><span>Messages</span>
+      </a>
+      
+      <div class="nav-section">System</div>
+      <a class="nav-link" data-page="settings" onclick="showPage('settings')">
+        <span class="ic">⚙️</span><span>Settings</span>
+      </a>
+      <a class="nav-link" data-page="maintenance" onclick="showPage('maintenance')">
+        <span class="ic">🔧</span><span>Maintenance</span>
+      </a>
+      <a class="nav-link" data-page="logs" onclick="showPage('logs')">
+        <span class="ic">📜</span><span>Activity Logs</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-info" onclick="showPage('profile')">
+        <div class="avatar" id="adminAvatar">A</div>
+        <div>
+          <div class="name" id="adminName">Admin</div>
+          <div class="role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  
+  <!-- ===== Main Content ===== -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="refreshPage()" title="Refresh">🔄</button>
+        <button class="icon-btn" onclick="window.open('../', '_blank')" title="View App">🌐</button>
+        <button class="icon-btn" onclick="adminLogout()" title="Logout">🚪</button>
+      </div>
+    </header>
+    
+    <!-- Page Container -->
+    <div class="page-container" id="pageContainer">
+      <!-- Pages load here -->
+    </div>
+  </main>
+</div>
+
+<!-- ===== Modal Container ===== -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- ===== Toast Container ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ✅ ONLY 3 SCRIPT FILES NEEDED -->
+<script src="js/admin-api.js"></script>
+<script src="js/admin-auth.js"></script>
+<script src="js/admin-app.js"></script>
+
+<script>
+  if (!isAdminLoggedIn()) {
+    window.location.href = 'login.html';
+  } else {
+    initAdmin();
+  }
+</script>
+
+</body>
+</html>
